@@ -70,9 +70,9 @@ while ($row = mysqli_fetch_assoc($query)) {
                                         <a href="editSiswa.php?id=<?= (int) $data["ID"] ?>" class="rounded-md px-2.5 py-1.5 text-xs font-semibold text-sky-700 transition hover:bg-sky-50 hover:text-sky-900" aria-label="Edit data siswa">
                                             Edit
                                         </a>
-                                        <a href="hapus.php?id=<?= (int) $data["ID"] ?>" class="rounded-md px-2.5 py-1.5 text-xs font-semibold text-rose-600 transition hover:bg-rose-50 hover:text-rose-800" aria-label="Hapus data siswa">
+                                        <button type="button" data-delete-url="hapus.php?id=<?= (int) $data["ID"] ?>" data-student-name="<?= htmlspecialchars($data["nama"], ENT_QUOTES, "UTF-8") ?>" class="rounded-md px-2.5 py-1.5 text-xs font-semibold text-rose-600 transition hover:bg-rose-50 hover:text-rose-800" aria-label="Hapus data siswa">
                                             Hapus
-                                        </a>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -89,5 +89,40 @@ while ($row = mysqli_fetch_assoc($query)) {
             </div>
         </section>
     </main>
+
+    <dialog id="konfirmasi-hapus" class="w-[calc(100%-2rem)] max-w-md rounded-2xl p-0 shadow-2xl backdrop:bg-slate-900/60">
+        <div class="p-6">
+            <h2 class="text-lg font-bold text-slate-900">Konfirmasi Hapus</h2>
+            <p class="mt-2 text-sm text-slate-600">
+                Apakah Anda yakin ingin menghapus data siswa <span id="nama-siswa-hapus" class="font-semibold text-slate-800"></span>?
+            </p>
+            <div class="mt-6 flex justify-end gap-3">
+                <button type="button" id="batal-hapus" class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
+                    Tidak
+                </button>
+                <a id="setuju-hapus" href="#" class="rounded-lg bg-rose-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-rose-700">
+                    Ya
+                </a>
+            </div>
+        </div>
+    </dialog>
+
+    <script>
+        const dialogHapus = document.getElementById("konfirmasi-hapus");
+        const namaSiswaHapus = document.getElementById("nama-siswa-hapus");
+        const setujuHapus = document.getElementById("setuju-hapus");
+
+        document.querySelectorAll("[data-delete-url]").forEach((tombolHapus) => {
+            tombolHapus.addEventListener("click", () => {
+                setujuHapus.href = tombolHapus.dataset.deleteUrl;
+                namaSiswaHapus.textContent = tombolHapus.dataset.studentName;
+                dialogHapus.showModal();
+            });
+        });
+
+        document.getElementById("batal-hapus").addEventListener("click", () => {
+            dialogHapus.close();
+        });
+    </script>
 </body>
 </html>
